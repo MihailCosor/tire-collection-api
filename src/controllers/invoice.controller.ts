@@ -5,19 +5,19 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Helper function to generate a unique invoice number
+// helper function to generate a unique invoice number
 const generateInvoiceNumber = async (): Promise<string> => {
-  // Format: INV-YYYYMM-XXXX where XXXX is a sequential number starting from 0001
+  // format: inv-yyyymm-xxxx where xxxx is a sequential number starting from 0001
   const now = new Date();
   const yearMonth = now.getFullYear().toString() +
     (now.getMonth() + 1).toString().padStart(2, '0');
   
-  // Get the first day of the current month
+  // get first day of current month
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-  // Get the first day of the next month
+  // get first day of next month
   const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
   
-  // Count invoices created in the current month to determine the next sequence number
+  // count invoices for current month
   const monthlyInvoiceCount = await prisma.invoice.count({
     where: {
       createdAt: {
@@ -27,7 +27,7 @@ const generateInvoiceNumber = async (): Promise<string> => {
     }
   });
   
-  // Create sequence number (starting from 0001)
+  // create sequence number
   const sequenceNumber = (monthlyInvoiceCount + 1).toString().padStart(4, '0');
   
   return `INV-${yearMonth}-${sequenceNumber}`;
@@ -41,13 +41,13 @@ export const createInvoice = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    // Generate an invoice number
+    // generate invoice number
     const invoiceNumber = await generateInvoiceNumber();
 
     const invoiceData: CreateInvoiceInput = {
       orderId,
-      orderType: "van", // Using van as the default for now
-      invoiceNumber // Add the generated invoice number
+      orderType: "van", // using van as default for now
+      invoiceNumber
     };
 
     const newInvoice = await invoiceService.createInvoice(invoiceData);

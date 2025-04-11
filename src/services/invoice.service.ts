@@ -33,7 +33,7 @@ const generateInvoiceNumber = async (): Promise<string> => {
 
 export const createInvoice = async (data: CreateInvoiceInput): Promise<Invoice> => {
   try {
-    // Get the order to extract amount
+    // get order amount
     let amount = 0;
     
     if (data.orderType === 'van') {
@@ -46,7 +46,7 @@ export const createInvoice = async (data: CreateInvoiceInput): Promise<Invoice> 
       throw new Error(`Unsupported order type: ${data.orderType}`);
     }
 
-    // @ts-ignore - Ignoring type issues for now
+    // @ts-ignore
     const invoice = await prisma.invoice.create({
       data: {
         orderId: data.orderId,
@@ -65,7 +65,7 @@ export const createInvoice = async (data: CreateInvoiceInput): Promise<Invoice> 
 
 export const updateInvoicePayment = async (id: number, data: UpdateInvoiceInput): Promise<Invoice> => {
   try {
-    // @ts-ignore - Ignoring type issues for now
+    // @ts-ignore
     const updatedInvoice = await prisma.invoice.update({
       where: { id },
       data: {
