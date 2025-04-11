@@ -57,3 +57,30 @@ export const validateTruckOrder = (req: Request, res: Response, next: NextFuncti
 
   next();
 };
+
+export const validateOperatorAction = (req: any, res: any, next: any) => {
+  const { operatorId, actionType } = req.body;
+
+  const errors = [];
+
+  if (!operatorId) {
+    errors.push('operatorId is required');
+  } else if (typeof operatorId !== 'number' || operatorId <= 0) {
+    errors.push('operatorId must be a positive number');
+  }
+
+  if (!actionType) {
+    errors.push('actionType is required');
+  } else {
+    const validActionTypes = ['dublare', 'sortare', 'incarcare', 'descarcare', 'predare_bani'];
+    if (!validActionTypes.includes(actionType)) {
+      errors.push(`actionType must be one of: ${validActionTypes.join(', ')}`);
+    }
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({ error: errors.join(', ') });
+  }
+
+  next();
+};

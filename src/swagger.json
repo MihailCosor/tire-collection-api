@@ -561,6 +561,106 @@
             }
           }
         }
+      },
+      "/api/operators/actions": {
+        "post": {
+          "summary": "Record an operator action",
+          "tags": ["Operators"],
+          "description": "Records actions performed by operators (e.g., dublare, sortare, incarcare, descarcare, predare_bani)",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOperatorActionInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Action recorded successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OperatorActionResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - validation error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Operator not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "summary": "Get operator actions",
+          "tags": ["Operators"],
+          "description": "Retrieves actions performed by operators, with optional filtering by operator ID",
+          "parameters": [
+            {
+              "name": "operatorId",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "Filter by operator ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of operator actions",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/OperatorActionResponse"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "components": {
@@ -955,6 +1055,91 @@
               "type": "string",
               "format": "date-time",
               "description": "Last update date and time"
+            }
+          }
+        },
+        "CreateOperatorActionInput": {
+          "type": "object",
+          "required": [
+            "operatorId",
+            "actionType"
+          ],
+          "properties": {
+            "operatorId": {
+              "type": "integer",
+              "description": "Operator ID"
+            },
+            "actionType": {
+              "type": "string",
+              "description": "Type of action performed",
+              "enum": ["dublare", "sortare", "incarcare", "descarcare", "predare_bani"]
+            },
+            "details": {
+              "type": "string",
+              "description": "Additional details about the action"
+            },
+            "performedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the action was performed (defaults to current time if not provided)"
+            }
+          }
+        },
+        "OperatorActionResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Action ID"
+            },
+            "operatorId": {
+              "type": "integer",
+              "description": "Operator ID"
+            },
+            "operator": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Operator ID"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Operator name"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "Operator role"
+                }
+              }
+            },
+            "actionType": {
+              "type": "string",
+              "description": "Type of action performed",
+              "enum": ["dublare", "sortare", "incarcare", "descarcare", "predare_bani"]
+            },
+            "details": {
+              "type": "string",
+              "description": "Additional details about the action"
+            },
+            "performedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the action was performed"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Record creation time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Record last update time"
+            },
+            "message": {
+              "type": "string",
+              "description": "Success message"
             }
           }
         }
