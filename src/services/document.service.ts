@@ -5,7 +5,6 @@ import PDFDocument from 'pdfkit';
 
 const prisma = new PrismaClient();
 
-// helper function to ensure documents directory exists
 const ensureDocumentsDir = () => {
   const documentsDir = path.join(process.cwd(), 'public/documents');
   if (!fs.existsSync(documentsDir)) {

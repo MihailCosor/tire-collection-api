@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 export const createOperatorAction = async (actionData: CreateOperatorActionInput) => {
   try {
-    // Validate operator exists
     const operator = await prisma.operator.findUnique({
       where: { id: actionData.operatorId }
     });
@@ -14,13 +13,11 @@ export const createOperatorAction = async (actionData: CreateOperatorActionInput
       throw new Error(`Operator with id ${actionData.operatorId} not found`);
     }
 
-    // Validate action type
     const validActionTypes: OperatorActionType[] = ['dublare', 'sortare', 'incarcare', 'descarcare', 'predare_bani'];
     if (!validActionTypes.includes(actionData.actionType as OperatorActionType)) {
       throw new Error(`Invalid action type: ${actionData.actionType}. Must be one of: ${validActionTypes.join(', ')}`);
     }
 
-    // Create the action
     const newAction = await prisma.operatorAction.create({
       data: {
         operatorId: actionData.operatorId,

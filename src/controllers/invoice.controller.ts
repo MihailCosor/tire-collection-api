@@ -5,7 +5,6 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// helper function to generate a unique invoice number
 const generateInvoiceNumber = async (): Promise<string> => {
   // format: inv-yyyymm-xxxx where xxxx is a sequential number starting from 0001
   const now = new Date();

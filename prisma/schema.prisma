@@ -1,4 +1,3 @@
-// 1. Datasource and Generator Configuration
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,128 +7,144 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-// 2. Model Definitions
-
 model Service {
-  id          Int      @id @default(autoincrement())
-  name        String
-  address     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  orders      Order[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
 }
 
 model Operator {
-  id          Int      @id @default(autoincrement())
-  name        String
-  role        String   // collector, driver, handler
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  orders      Order[]
-  actions     OperatorAction[]
+  id        Int              @id @default(autoincrement())
+  name      String
+  role      String // collector, driver, handler
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  orders    Order[]
+  actions   OperatorAction[]
 }
 
 model Vehicle {
-  id          Int      @id @default(autoincrement())
-  plateNumber String   @unique
-  type        String   // van, truck
+  id          Int               @id @default(autoincrement())
+  plateNumber String            @unique
+  type        String // van, truck
   capacity    Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   orders      Order[]
+  locations   VehicleLocation[]
 }
 
 model TireCategory {
-  id          Int      @id @default(autoincrement())
+  id          Int                 @id @default(autoincrement())
   name        String
   description String?
   price       Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt()
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt()
   orders      OrderTireCategory[]
   depotStock  DepotStock[]
 }
 
 model Order {
-  id          Int                  @id @default(autoincrement())
-  service     Service              @relation(fields: [serviceId], references: [id])
-  serviceId   Int
-  operator    Operator             @relation(fields: [operatorId], references: [id])
-  operatorId  Int
-  vehicle     Vehicle              @relation(fields: [vehicleId], references: [id])
-  vehicleId   Int
-  destination String
-  isPaid      Boolean              @default(false)
-  amount      Float
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  invoice     Invoice?
+  id             Int                 @id @default(autoincrement())
+  service        Service             @relation(fields: [serviceId], references: [id])
+  serviceId      Int
+  operator       Operator            @relation(fields: [operatorId], references: [id])
+  operatorId     Int
+  vehicle        Vehicle             @relation(fields: [vehicleId], references: [id])
+  vehicleId      Int
+  destination    String
+  isPaid         Boolean             @default(false)
+  amount         Float
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  invoice        Invoice?
   tireCategories OrderTireCategory[]
-  weighing    Weighing?
-  dropZone    DropZoneUpdate?
+  weighing       Weighing?
+  dropZone       DropZoneUpdate?
 }
 
 model OrderTireCategory {
-  id            Int          @id @default(autoincrement())
-  order         Order        @relation(fields: [orderId], references: [id])
-  orderId       Int
-  tireCategory  TireCategory @relation(fields: [tireCategoryId], references: [id])
+  id             Int          @id @default(autoincrement())
+  order          Order        @relation(fields: [orderId], references: [id])
+  orderId        Int
+  tireCategory   TireCategory @relation(fields: [tireCategoryId], references: [id])
   tireCategoryId Int
-  quantity      Int
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  quantity       Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Invoice {
-  id          Int      @id @default(autoincrement())
-  order       Order    @relation(fields: [orderId], references: [id])
-  orderId     Int      @unique
-  orderType   String   // van, truck
-  number      String?  @unique
-  issuedAt    DateTime @default(now())
-  paidAt      DateTime?
-  amount      Float
-  isPaid      Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  order     Order     @relation(fields: [orderId], references: [id])
+  orderId   Int       @unique
+  orderType String // van, truck
+  number    String?   @unique
+  issuedAt  DateTime  @default(now())
+  paidAt    DateTime?
+  amount    Float
+  isPaid    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model DepotStock {
-  id            Int          @id @default(autoincrement())
-  tireCategory  TireCategory @relation(fields: [tireCategoryId], references: [id])
+  id             Int          @id @default(autoincrement())
+  tireCategory   TireCategory @relation(fields: [tireCategoryId], references: [id])
   tireCategoryId Int
-  quantity      Int
-  lastUpdated   DateTime     @default(now())
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  quantity       Int
+  lastUpdated    DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model Weighing {
-  id          Int      @id @default(autoincrement())
-  order       Order    @relation(fields: [orderId], references: [id])
-  orderId     Int      @unique
-  weight      Float    // in kg
-  weighedAt   DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int      @unique
+  weight    Float // in kg
+  weighedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model DropZoneUpdate {
-  id          Int      @id @default(autoincrement())
-  order       Order    @relation(fields: [orderId], references: [id])
-  orderId     Int      @unique
-  unloadedAt  DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    Int      @unique
+  unloadedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model OperatorAction {
   id          Int      @id @default(autoincrement())
   operator    Operator @relation(fields: [operatorId], references: [id])
   operatorId  Int
-  actionType  String   // dublare, sortare, incarcare, descarcare, predare_bani
+  actionType  String // dublare, sortare, incarcare, descarcare, predare_bani
   details     String?
   performedAt DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model VehicleLocation {
+  id         Int      @id @default(autoincrement())
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId  Int
+  latitude   Float
+  longitude  Float
+  accuracy   Float?
+  speed      Float?
+  direction  Float? // in degrees, 0-360
+  recordedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([vehicleId])
+  @@index([recordedAt])
 }
