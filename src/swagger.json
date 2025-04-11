@@ -89,23 +89,226 @@
           }
         }
       },
-      "/health": {
+      "/api/orders/truck": {
         "get": {
-          "summary": "Health check endpoint",
-          "tags": ["Health"],
+          "summary": "Get all truck orders",
+          "tags": ["Truck Orders"],
           "responses": {
             "200": {
-              "description": "API is healthy",
+              "description": "A list of truck orders",
               "content": {
                 "application/json": {
                   "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string",
-                        "example": "OK"
-                      }
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/TruckOrder"
                     }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Create a new truck order",
+          "tags": ["Truck Orders"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTruckOrderInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The created truck order",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TruckOrder"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - validation error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/depot/stock": {
+        "get": {
+          "summary": "Get current depot stock",
+          "tags": ["Depot"],
+          "description": "Returns the current stock of tires in the depot",
+          "responses": {
+            "200": {
+              "description": "A list of depot stock entries",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DepotStock"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/orders/{id}/etransport": {
+        "post": {
+          "summary": "Generate eTransport document for an order",
+          "tags": ["Documents"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "Order ID"
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "The generated eTransport document",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DocumentResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Order not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/orders/{id}/environment": {
+        "post": {
+          "summary": "Generate environment document for an order",
+          "tags": ["Documents"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "Order ID"
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "The generated environment document",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DocumentResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Order not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
                   }
                 }
               }
@@ -286,6 +489,58 @@
             }
           }
         },
+        "CreateTruckOrderInput": {
+          "type": "object",
+          "required": [
+            "serviceId",
+            "operatorId",
+            "vehicleId",
+            "destination",
+            "amount",
+            "tireCategories"
+          ],
+          "properties": {
+            "serviceId": {
+              "type": "integer",
+              "description": "Service ID"
+            },
+            "operatorId": {
+              "type": "integer",
+              "description": "Operator ID"
+            },
+            "vehicleId": {
+              "type": "integer",
+              "description": "Vehicle ID"
+            },
+            "destination": {
+              "type": "string",
+              "description": "Destination"
+            },
+            "amount": {
+              "type": "number",
+              "description": "Order amount"
+            },
+            "tireCategories": {
+              "type": "array",
+              "description": "List of tire categories and quantities",
+              "items": {
+                "type": "object",
+                "required": ["tireCategoryId", "quantity"],
+                "properties": {
+                  "tireCategoryId": {
+                    "type": "integer",
+                    "description": "Tire category ID"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "description": "Quantity",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
         "VanOrder": {
           "type": "object",
           "allOf": [
@@ -316,6 +571,124 @@
               }
             }
           ]
+        },
+        "TruckOrder": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/CreateTruckOrderInput"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Order ID"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Creation date and time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Last update date and time"
+                },
+                "isPaid": {
+                  "type": "boolean",
+                  "description": "Payment status"
+                }
+              }
+            }
+          ]
+        },
+        "DepotStock": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Depot stock entry ID"
+            },
+            "tireCategoryId": {
+              "type": "integer",
+              "description": "Tire category ID"
+            },
+            "tireCategory": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Tire category ID"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Category name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Category description"
+                },
+                "price": {
+                  "type": "number",
+                  "description": "Price per unit"
+                }
+              }
+            },
+            "quantity": {
+              "type": "integer",
+              "description": "Current stock quantity"
+            },
+            "lastUpdated": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last stock update time"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Creation date and time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last update date and time"
+            }
+          }
+        },
+        "DocumentResponse": {
+          "type": "object",
+          "properties": {
+            "documentId": {
+              "type": "string",
+              "description": "Unique document identifier"
+            },
+            "orderId": {
+              "type": "integer",
+              "description": "Associated order ID"
+            },
+            "filename": {
+              "type": "string",
+              "description": "Document filename"
+            },
+            "filePath": {
+              "type": "string",
+              "description": "Path to access the document"
+            },
+            "downloadUrl": {
+              "type": "string",
+              "description": "Full URL to download the document"
+            },
+            "generatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Document generation timestamp"
+            },
+            "message": {
+              "type": "string",
+              "description": "Success message"
+            }
+          }
         },
         "Error": {
           "type": "object",
