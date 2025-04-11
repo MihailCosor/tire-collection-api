@@ -112,6 +112,124 @@
             }
           }
         }
+      },
+      "/api/invoices/{orderId}": {
+        "post": {
+          "summary": "Create a new invoice for an order",
+          "tags": ["Invoices"],
+          "parameters": [
+            {
+              "name": "orderId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "Order ID"
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "The created invoice",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Invoice"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Order not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/invoices/{id}/pay": {
+        "patch": {
+          "summary": "Mark an invoice as paid",
+          "tags": ["Invoices"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "Invoice ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The updated invoice",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Invoice"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Invoice not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "components": {
@@ -205,6 +323,58 @@
             "error": {
               "type": "string",
               "description": "Error message"
+            }
+          }
+        },
+        "Invoice": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Invoice ID"
+            },
+            "orderId": {
+              "type": "integer",
+              "description": "Order ID"
+            },
+            "orderType": {
+              "type": "string",
+              "description": "Type of order",
+              "example": "van"
+            },
+            "number": {
+              "type": "string",
+              "description": "Invoice number",
+              "nullable": true
+            },
+            "amount": {
+              "type": "number",
+              "description": "Invoice amount"
+            },
+            "isPaid": {
+              "type": "boolean",
+              "description": "Payment status"
+            },
+            "paidAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Payment date and time",
+              "nullable": true
+            },
+            "issuedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Issue date and time"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Creation date and time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last update date and time"
             }
           }
         }

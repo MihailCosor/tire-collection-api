@@ -63,3 +63,24 @@ export const getVanOrders = async () => {
         },
     });
 };
+
+export const getVanOrderById = async (id: number) => {
+    return await prisma.order.findUnique({
+        where: {
+            id,
+            vehicle: {
+                type: "van",
+            },
+        },
+        include: {
+            service: true,
+            operator: true,
+            vehicle: true,
+            tireCategories: {
+                include: {
+                    tireCategory: true,
+                },
+            },
+        },
+    });
+};
