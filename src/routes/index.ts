@@ -4,6 +4,7 @@ import invoiceRoutes from "./invoice.routes";
 import depotRoutes from "./depot.routes";
 import truckRoutes from "./truck.routes";
 import documentRoutes from "./document.routes";
+import operationsRoutes from "./operations.routes";
 
 const router = Router();
 
@@ -13,5 +14,6 @@ router.use("/orders/truck", truckRoutes);
 router.use("/orders", documentRoutes);
 router.use("/invoices", invoiceRoutes);
 router.use("/depot", depotRoutes);
+router.use("", operationsRoutes);  // root level for weighing and dropzone
 
 export default router;

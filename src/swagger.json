@@ -166,6 +166,134 @@
           }
         }
       },
+      "/api/weighing/{orderId}": {
+        "post": {
+          "summary": "Confirm weight measurement for an order",
+          "tags": ["Operations"],
+          "parameters": [
+            {
+              "name": "orderId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "Order ID"
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWeighingInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The created weighing record",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/WeighingResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Order not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/dropzone/{orderId}": {
+        "patch": {
+          "summary": "Confirm unloading in the drop zone",
+          "tags": ["Operations"],
+          "parameters": [
+            {
+              "name": "orderId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "Order ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The created drop zone update",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DropZoneUpdateResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Order not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "/api/depot/stock": {
         "get": {
           "summary": "Get current depot stock",
@@ -541,6 +669,17 @@
             }
           }
         },
+        "CreateWeighingInput": {
+          "type": "object",
+          "required": ["weight"],
+          "properties": {
+            "weight": {
+              "type": "number",
+              "description": "Weight in kg",
+              "minimum": 0.1
+            }
+          }
+        },
         "VanOrder": {
           "type": "object",
           "allOf": [
@@ -602,6 +741,74 @@
               }
             }
           ]
+        },
+        "WeighingResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Weighing record ID"
+            },
+            "orderId": {
+              "type": "integer",
+              "description": "Order ID"
+            },
+            "weight": {
+              "type": "number",
+              "description": "Weight in kg"
+            },
+            "weighedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Weighing timestamp"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Creation date and time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last update date and time"
+            },
+            "message": {
+              "type": "string",
+              "description": "Success message"
+            }
+          }
+        },
+        "DropZoneUpdateResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Drop zone update ID"
+            },
+            "orderId": {
+              "type": "integer",
+              "description": "Order ID"
+            },
+            "unloadedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Unloading timestamp"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Creation date and time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Last update date and time"
+            },
+            "message": {
+              "type": "string",
+              "description": "Success message"
+            }
+          }
         },
         "DepotStock": {
           "type": "object",
