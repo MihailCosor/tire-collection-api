@@ -1,0 +1,38 @@
+{
+  "name": "tire-collection-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/server.ts",
+    "dev": "ts-node src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MihailCosor/tire-collection-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MihailCosor/tire-collection-api/issues"
+  },
+  "homepage": "https://github.com/MihailCosor/tire-collection-api#readme",
+  "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "@types/swagger-ui-express": "^4.1.8",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
